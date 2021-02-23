@@ -12,7 +12,7 @@ def validate_input(input):
     if device_id.isdigit() and value.isdigit() and curr_timestamp.isdigit():
         return True
     else:
-        print(device_id,value,curr_timestamp)
+        # print(device_id,value,curr_timestamp)
         return False
 
 
