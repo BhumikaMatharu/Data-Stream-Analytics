@@ -2,7 +2,7 @@ from kafka import KafkaProducer
 from kafka.errors import KafkaError
 import json
 
-
+# Validating input data format
 def validate_input(input):
     device_id, value, timestamp = input.split(',')
     device_id = device_id[11:]
@@ -35,6 +35,6 @@ def kafka_producer(input_file, server, topic):
 
 
 if __name__ == '__main__':
-    topic = 'CiscoMeraki'
+    topic = 'Topic'
     bootstrap_servers = ['localhost:9092']
-    kafka_producer('append.txt', bootstrap_servers, topic)
+    kafka_producer('input_data.txt', bootstrap_servers, topic)

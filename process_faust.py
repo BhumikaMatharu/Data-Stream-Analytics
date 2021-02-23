@@ -5,7 +5,7 @@ from py_mongodb import MongoClient
 app = faust.App('group', broker='kafka://localhost:9092', value_serializer='json')
 
 # Initiate Faust Topic, Faust Table, Dictionaries
-topic = app.topic('CiscoMeraki')
+topic = app.topic('Topic')
 table = app.Table('counter', partitions=1, default=list)
 processed_timestamp = {'time': 0}
 delayed_devices = dict()

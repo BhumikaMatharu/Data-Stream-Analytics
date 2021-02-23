@@ -7,7 +7,7 @@ class MongoClient():
     def __init__(self):
         self.client = motor.motor_asyncio.AsyncIOMotorClient('mongodb://localhost:27017')
         self.mydb = self.client["Data_Analysis"]
-        self.mycol = self.mydb['Meraki']
+        self.mycol = self.mydb['Devices']
 
     # Insert one row(document) in DB
     async def insert_one(self, document):

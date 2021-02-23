@@ -14,17 +14,21 @@ Similary modify the 'dataDir' in zookeeper.properties to the directory where Kaf
 3. Install Faust by running pip install -U faust in command prompt. pip install -U faust.
 https://faust.readthedocs.io/en/latest/userguide/installation.html
 
-4.Install Mongo DB and Mongo DB drivers
-(a)Run pip install pymongo in command prompt to get pymongo Python MongoDB driver
-(b)Run python -m pip install motor in command prompt to get Motor MongoDB driver (https://motor.readthedocs.io/en/stable/)
-(c)Go to https://www.mongodb.com/try/download/community and download the current MongoDB community server. Keep the default settings and install.
-(d)Add C:\Program Files\MongoDB\Server\3.4\bin into environment variables, so that we can run mongod.exe from anywhere in the system.
+4. Install Mongo DB and Mongo DB drivers
+   (a) Run pip install pymongo in command prompt to get pymongo Python MongoDB driver
+   (b) Run python -m pip install motor in command prompt to get Motor MongoDB driver (https://motor.readthedocs.io/en/stable/)
+   (c) Go to https://www.mongodb.com/try/download/community and download the current MongoDB community server. Keep the default settings and install.
+   (d) Add C:\Program Files\MongoDB\Server\3.4\bin into environment variables, so that we can run mongod.exe from anywhere in the system.
 
-5. Open a command prompt and run mongod to start MongoDB
+5. Add the data into input_data.txt file in the format of device_id: 1, value: 1, timestamp: 1611741600. There is a test .txt file given for reference.
 
-4. Run the start.bat file. It will start the Zookeeper and Kafka Server. It will also create a Kafka Topic and run main.py to initiate the Kafka Producer to produce data to the topic.
+6. Open a command prompt and run mongod to start MongoDB
 
-5. Open a command prompt, make sure that you are in the same directory as process_faust.py. Enter faust -A process_faust worker -l info into the command prompt. This will start a worker agent for the Faust App.
+7. Run the start.bat file. It will start the Zookeeper and Kafka Server. It will also create a Kafka Topic and run main.py to initiate the Kafka Producer to produce data to the topic.
 
-6. Once the processing is done, you can execute Db_data.py to get the data stored in MongoDB
+8. Open a command prompt, make sure that you are in the same directory as process_faust.py. Enter faust -A process_faust worker -l info into the command prompt. This will start a worker agent for the Faust App.
+
+9. Once the processing is done, you can execute Db_data.py to get the data stored in MongoDB
+
+10. It is suggested to install everything in the same directory to run these commands with ease. If you are changing the directories, make sure to either modify the start.bat accordingly or run the Zookeeper and Kafka server individually.
 
