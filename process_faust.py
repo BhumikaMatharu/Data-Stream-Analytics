@@ -2,10 +2,10 @@ import faust
 from py_mongodb import MongoClient
 
 # Creating the faust App and assigning the consumer group to consume from Kafka topic
-app = faust.App('group', broker='kafka://localhost:9092', value_serializer='json')
+app = faust.App('cons_grp', broker='kafka://localhost:9092', value_serializer='json')
 
 # Initiate Faust Topic, Faust Table, Dictionaries
-topic = app.topic('Topic')
+topic = app.topic('KafkaTopic')
 table = app.Table('counter', partitions=1, default=list)
 processed_timestamp = {'time': 0}
 delayed_devices = dict()
@@ -35,10 +35,9 @@ async def receiver(stream):
     last_timestamp = 0
     async for s in stream:
         device_id, value, timestamp = s.split(',')
-        device_id = int(device_id[11:])
-        value = int(value[7:])
-        curr_timestamp = convert_timestamp(int(timestamp[12:]))
-
+        device_id = int(device_id.split(':')[-1].strip())
+        value = int(value.split(':')[-1].strip())
+        curr_timestamp = int(convert_timestamp(timestamp.split(':')[-1].strip()))
         # For delayed timestamps
         if (curr_timestamp - last_timestamp) < 0:
             await handle_delay(device_id, value, curr_timestamp)
@@ -77,6 +76,7 @@ async def avg_stats(curr_minute):
 
 # Pushing the processed stats to db of each device in each min
 async def store_to_db(out, flag):
+    print("Hit Store to DB",[out,flag])
     mongo = MongoClient()
     if not flag:
         if len(out) == 1:
@@ -119,6 +119,7 @@ async def per_min():
     if keys:
         for k in keys:
             await avg_stats(k[1])
+        print("Last_timestamp processed")
 
 
 # Handle delay of 1 minute(60 seconds)

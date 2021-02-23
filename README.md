@@ -11,7 +11,7 @@ For example C:/Kafka
 2. In extracted Kafka folder, go to the windows directory and modify value of 'log.dirs' in server.properties to the directory where Kafka folder is present i.e. C:/kafka/kafka-logs
 Similary modify the 'dataDir' in zookeeper.properties to the directory where Kafka folder is present i.e. C:/kafka/zookeeper-data
 
-3. Install Faust by running pip install -U faust in command prompt. pip install -U faust.
+3. Install Faust by running pip install -U faust in command prompt.
 https://faust.readthedocs.io/en/latest/userguide/installation.html
 
 4. Install Mongo DB and Mongo DB drivers
@@ -24,11 +24,14 @@ https://faust.readthedocs.io/en/latest/userguide/installation.html
 
 6. Open a command prompt and run mongod to start MongoDB
 
-7. Run the start.bat file. It will start the Zookeeper and Kafka Server. It will also create a Kafka Topic and run main.py to initiate the Kafka Producer to produce data to the topic.
+7. Run the start.bat file. It will start the Zookeeper and Kafka Server. It will also create a Kafka Topic.
+
+8. Run main.py to initiate the Kafka Producer to produce data to the topic.You will see the data being sent to Topic with Topic Name and Partition as Output.
 
 8. Open a command prompt, make sure that you are in the same directory as process_faust.py. Enter faust -A process_faust worker -l info into the command prompt. This will start a worker agent for the Faust App.
+You will see entries being processed as output on command prompt. Wait for few minutes as we have some timer functions executing as well. When you see 'Last_timestamp processed', it means we have reached the end of data stream.
 
-9. Once the processing is done, you can execute Db_data.py to get the data stored in MongoDB
+9. Once the processing is done, in a new command window you can execute Db_data.py to see the data stored in MongoDB
 
 10. It is suggested to install everything in the same directory to run these commands with ease. If you are changing the directories, make sure to either modify the start.bat accordingly or run the Zookeeper and Kafka server individually.
 
