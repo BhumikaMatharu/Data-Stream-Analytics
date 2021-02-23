@@ -22,13 +22,13 @@ https://faust.readthedocs.io/en/latest/userguide/installation.html
 
 5. Add the data into input_data.txt file in the format of device_id: 1, value: 1, timestamp: 1611741600. There is a test .txt file given for reference.
 
-6. Open a command prompt and run mongod to start MongoDB
+6. Open a command prompt and Enter 'mongod' to start MongoDB
 
 7. Run the start.bat file. It will start the Zookeeper and Kafka Server. It will also create a Kafka Topic.
 
 8. Run main.py to initiate the Kafka Producer to produce data to the topic.You will see the data being sent to Topic with Topic Name and Partition as Output.
 
-8. Open a command prompt, make sure that you are in the same directory as process_faust.py. Enter faust -A process_faust worker -l info into the command prompt. This will start a worker agent for the Faust App.
+8. Open a new command prompt, make sure that you are in the same directory as process_faust.py. Enter 'faust -A process_faust worker -l info' into the command prompt. This will start a worker agent for the Faust App.
 You will see entries being processed as output on command prompt. Wait for few minutes as we have some timer functions executing as well. When you see 'Last_timestamp processed', it means we have reached the end of data stream.
 
 9. Once the processing is done, in a new command window you can execute Db_data.py to see the data stored in MongoDB
