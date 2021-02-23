@@ -2,10 +2,10 @@ import faust
 from py_mongodb import MongoClient
 
 # Creating the faust App and assigning the consumer group to consume from Kafka topic
-app = faust.App('test1', broker='kafka://localhost:9092', value_serializer='json')
+app = faust.App('group', broker='kafka://localhost:9092', value_serializer='json')
 
 # Initiate Faust Topic, Faust Table, Dictionaries
-topic = app.topic('FinalTopic')
+topic = app.topic('CiscoMeraki')
 table = app.Table('counter', partitions=1, default=list)
 processed_timestamp = {'time': 0}
 delayed_devices = dict()
@@ -15,6 +15,7 @@ delayed_devices = dict()
 def convert_timestamp(time):
     time = int(time)
     return time - (time % 60)
+
 
 # Output Format
 def create_document(device: int, time: float, minm: int, maxm: int, avg: float):
@@ -76,7 +77,6 @@ async def avg_stats(curr_minute):
 
 # Pushing the processed stats to db of each device in each min
 async def store_to_db(out, flag):
-    print('Store db', [out, flag])
     mongo = MongoClient()
     if not flag:
         if len(out) == 1:
@@ -87,18 +87,18 @@ async def store_to_db(out, flag):
             processed_timestamp['time'] = out[-1]['timestamp_start']
     else:
         for o in out:
-            query = {'device_id':o['device_id'],'timestamp_start':o['timestamp_start']}
+            query = {'device_id': o['device_id'], 'timestamp_start': o['timestamp_start']}
             record = await mongo.find_document(query)
             key = (o['device_id'], o['timestamp_start'])
             if record:
-                minm = min(o['min'],record['min'])
-                maxm = max(o['max'],record['max'])
-                avg = (table[key][3]+delayed_devices[key][3]) / (table[key][2]+delayed_devices[key][2])
-                new_record = create_document(key[0],key[1],minm,maxm,avg)
-                await mongo.update_document(query,new_record)
+                minm = min(o['min'], record['min'])
+                maxm = max(o['max'], record['max'])
+                avg = (table[key][3] + delayed_devices[key][3]) / (table[key][2] + delayed_devices[key][2])
+                new_record = create_document(key[0], key[1], minm, maxm, avg)
+                await mongo.update_document(query, new_record)
             else:
-                avg = delayed_devices[key][3]/delayed_devices[key][2]
-                record = create_document(key[0],key[1],delayed_devices[key][0],delayed_devices[key][1],avg)
+                avg = delayed_devices[key][3] / delayed_devices[key][2]
+                record = create_document(key[0], key[1], delayed_devices[key][0], delayed_devices[key][1], avg)
                 await mongo.insert_one(record)
             del delayed_devices[key]
 
@@ -110,7 +110,7 @@ async def per_min():
     records = []
     if delayed_keys:
         for k, v in delayed_devices.items():
-            avg = v[3]/v[2]
+            avg = v[3] / v[2]
             records.append(create_document(k[0], k[1], v[0], v[1], avg))
         await store_to_db(records, 1)
 
@@ -119,6 +119,7 @@ async def per_min():
     if keys:
         for k in keys:
             await avg_stats(k[1])
+
 
 # Handle delay of 1 minute(60 seconds)
 async def handle_delay(id, val, delay):

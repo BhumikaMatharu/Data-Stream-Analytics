@@ -1,25 +1,40 @@
 from kafka import KafkaProducer
+from kafka.errors import KafkaError
 import json
 
 
-def kafka_producer(input_file,server,topic):
+def validate_input(input):
+    device_id, value, timestamp = input.split(',')
+    device_id = device_id[11:]
+    value = value[7:]
+    curr_timestamp = timestamp[12:]
+    if device_id.isdigit() and value.isdigit() and curr_timestamp.isdigit():
+        return True
+    else:
+        return False
 
+
+def kafka_producer(input_file, server, topic):
     # Creating Kafka Producer to listen to data stream coming from devices
     producer = KafkaProducer(bootstrap_servers=server,
-                             value_serializer=lambda m: json.dumps(m).encode('ascii'))
+                             value_serializer=lambda m: json.dumps(m).encode('ascii'),
+                             retries=3)
 
-
-    with open(input_file,'r') as file:
+    with open(input_file, 'r') as file:
+        # Synchronous Send
         for line in file.readlines():
-            ack = producer.send(topic, line)
-            metadata = ack.get()
-            print(line)
-            print(metadata.topic)
-            print(metadata.partition)
+            if validate_input(line):
+                try:
+                    producer.send(topic, line)
+                except KafkaError as err:
+                    print("Something went wrong, Please check logs")
+                    raise err
+            else:
+                print("Invalidate Input Data")
+                raise Exception
+
 
 if __name__ == '__main__':
-
-    topic = 'TestTopic2'
+    topic = 'CiscoMeraki'
     bootstrap_servers = ['localhost:9092']
-    kafka_producer('Input_data.txt',bootstrap_servers,topic)
-
+    kafka_producer('append.txt', bootstrap_servers, topic)
