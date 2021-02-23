@@ -35,3 +35,4 @@ You will see entries being processed as output on command prompt. Wait for few m
 
 10. It is suggested to install everything in the same directory to run these commands with ease. If you are changing the directories, make sure to either modify the start.bat accordingly or run the Zookeeper and Kafka server individually.
 
+11. To test this application, you can use already given input_data.txt file. Please make sure to keep the input_data.txt in the same folder and also not to change the filename as this is the path present in the code.
